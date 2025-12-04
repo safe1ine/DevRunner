@@ -8,8 +8,15 @@ Base container images for Chaitin MonkeyCode developer workflows.
 - Push to GHCR: `PUSH=true REGISTRY=ghcr.io/chaitin/monkeycode-runner STACK=base VERSION=bookworm ./scripts/build.sh` (needs `docker login ghcr.io`).
 - Run: `docker run --rm -it ghcr.io/chaitin/monkeycode-runner/base:bookworm bash`
 
+## Go image (1.25-bookworm)
+- Dockerfile: `docker/golang/1.25-bookworm/Dockerfile` (extends the base image, installs Go 1.25.5 plus `staticcheck`, `gofumpt`, `swag`, `golangci-lint`).
+- Build locally: `STACK=golang VERSION=1.25-bookworm ./scripts/build.sh`
+- Push to GHCR: `PUSH=true REGISTRY=ghcr.io/chaitin/monkeycode-runner STACK=golang VERSION=1.25-bookworm ./scripts/build.sh`
+- Run: `docker run --rm -it ghcr.io/chaitin/monkeycode-runner/golang:1.25-bookworm bash`
+
 ## Layout
 - `docker/base/bookworm/Dockerfile` – base image definition.
+- `docker/golang/1.25-bookworm/Dockerfile` – Go developer image (bookworm + Go 1.25).
 - `scripts/build.sh` – helper to build/push images (env-driven: STACK, VERSION, REGISTRY, PUSH).
 - `docs/` – docs placeholder for future stacks and CI notes.
 

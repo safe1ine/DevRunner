@@ -13,15 +13,23 @@ on:
 
 env:
   REGISTRY: ghcr.io/chaitin/monkeycode-runner
-  STACK: base
-  VERSION: bookworm
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - stack: base
+            version: bookworm
+          - stack: golang
+            version: 1.25-bookworm
     permissions:
       contents: read
       packages: write
+    env:
+      STACK: ${{ matrix.stack }}
+      VERSION: ${{ matrix.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
