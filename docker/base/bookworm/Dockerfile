@@ -6,6 +6,13 @@ LABEL org.opencontainers.image.title="DevRunner Base" \
       org.opencontainers.image.description="Base toolbox image for DevRunner stacks"
 
 ARG DEBIAN_FRONTEND=noninteractive
+ARG DEBIAN_MIRROR="http://deb.debian.org/debian"
+ARG DEBIAN_SECURITY_MIRROR="http://security.debian.org/debian-security"
+
+RUN set -eux; \
+    printf 'deb %s bookworm main contrib non-free non-free-firmware\n' "${DEBIAN_MIRROR}" > /etc/apt/sources.list; \
+    printf 'deb %s bookworm-updates main contrib non-free non-free-firmware\n' "${DEBIAN_MIRROR}" >> /etc/apt/sources.list; \
+    printf 'deb %s bookworm-security main contrib non-free non-free-firmware\n' "${DEBIAN_SECURITY_MIRROR}" >> /etc/apt/sources.list
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \

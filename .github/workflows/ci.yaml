@@ -13,6 +13,8 @@ on:
 
 env:
   REGISTRY: ghcr.io/chaitin/monkeycode-runner
+  DEBIAN_MIRROR: https://mirrors.tuna.tsinghua.edu.cn/debian
+  DEBIAN_SECURITY_MIRROR: https://mirrors.tuna.tsinghua.edu.cn/debian-security
 
 jobs:
   build:
@@ -67,7 +69,22 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Build base (no push on PR)
+        if: matrix.stack == 'base'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/${{ matrix.stack }}/${{ matrix.version }}/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            DEBIAN_MIRROR=${{ env.DEBIAN_MIRROR }}
+            DEBIAN_SECURITY_MIRROR=${{ env.DEBIAN_SECURITY_MIRROR }}
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+
       - name: Build (no push on PR)
+        if: matrix.stack != 'base'
         uses: docker/build-push-action@v5
         with:
           context: .
